@@ -1,0 +1,11 @@
+<!doctype html>
+<title>Hello from Flask</title>
+{% if entries %}
+	<h1>it's a test</h1>
+	{% for entry in entries: %}
+    <li>{{ entry[0],entry[1],entry[2] }} </li>
+  {% endfor %}
+{% else %}
+  <h1>Hello it's empty!</h1>
+{% endif %}
+</<br>
