@@ -1,4 +1,5 @@
 import MySQLdb
+import json
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 
@@ -19,7 +20,7 @@ def hello():
 	cur = db.cursor()
 	cur.execute("SELECT * FROM heat_map limit 10")
 	#entries = [dict(longitude=row[0], latitude=row[1],count=int(row[2]) for row in cur.fetchall()]
-	return render_template('hello.html', entries=cur.fetchall())
+	return render_template('hello.html', entries=json.dumps(cur.fetchall()))
 
 @app.route('/heatmap')
 def heatmap():
@@ -29,8 +30,8 @@ def heatmap():
                      db="test")        # name of the data base
 
 	cur = db.cursor()
-	cur.execute("SELECT * FROM heat_map limit 10")
-	return render_template('heatmap.html',entries=cur.fetchall())
+	cur.execute("SELECT * FROM heat_map ")
+	return render_template('heatmap.html',entries=json.dumps(cur.fetchall()))
 
 if __name__ == '__main__':
     app.run(debug=True)

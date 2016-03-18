@@ -2,9 +2,17 @@
 <title>Hello from Flask</title>
 {% if entries %}
 	<h1>it's a test</h1>
-	{% for entry in entries: %}
-    <li>{{ entry[0],entry[1],entry[2] }} </li>
-  {% endfor %}
+    <li>{{ entries }} </li>
+    <script> 
+    	var entries = JSON.parse("{{ entries }}"); 
+    	points = {};
+    	for(i=0;i<entries.length;i++){
+    		points[i] = [];
+ 			 	points[i]["lng"] = entries[i][0];
+  			points[i]["lat"] = entries[i][1];
+			  points[i]["count"] = entries[i][2];
+			}
+    </script>
 {% else %}
   <h1>Hello it's empty!</h1>
 {% endif %}
