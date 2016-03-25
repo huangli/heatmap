@@ -33,10 +33,27 @@
 
     var entries = JSON.parse("{{ entries }}"); 
     points = [];
-    for(i=0;i<entries.length;i++){
-        point = {"lng":entries[i][0],"lat":entries[i][1],"count":entries[i][2]};
-        points[i] = point;
+    var pointArr = [];
+
+    translateCallback = function(data){
+        if(data.status == 0){
+          for (var i = 0; i < data.points.length; i++){
+            point = {"lng":data.points[i]["lng"],"lat":data.points[i]["lat"],"count":entries[i][2]};
+            points[i] = point;
+          }
+          heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":10});
+          map.addOverlay(heatmapOverlay);
+          heatmapOverlay.setDataSet({data:points,max:100});
+        }
     }
+    for(i=0; i<entries.length; i++){
+      // convert wgs84 to baidu 
+        var ggPoint = new BMap.Point(entries[i][0],entries[i][1]);
+        pointArr.push(ggPoint);
+    }
+    var convertor = new BMap.Convertor();
+    convertor.translate(pointArr, 1, 5, translateCallback)
+
    
     if(!isSupportCanvas()){
     	alert('热力图目前只支持有canvas支持的浏览器,您所使用的浏览器不能使用热力图功能~')
@@ -55,9 +72,7 @@
 		其中 key 表示插值的位置, 0~1. 
 		    value 为颜色值. 
      */
-	heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":10});
-	map.addOverlay(heatmapOverlay);
-	heatmapOverlay.setDataSet({data:points,max:1000});
+	
 	//是否显示热力图
     function openHeatmap(){
         heatmapOverlay.show();

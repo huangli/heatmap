@@ -30,8 +30,17 @@ def heatmap():
                      db="test")        # name of the data base
 
 	cur = db.cursor()
-	cur.execute("SELECT * FROM heat_map ")
+	cur.execute("SELECT * FROM heat_map limit 100")
 	return render_template('heatmap.html',entries=json.dumps(cur.fetchall()))
+
+# arcgis testing
+@app.route('/arcgis')
+def arcgis():
+	return render_template('arcgis.html')
+
+@app.route('/layer')
+def layer():
+	return render_template('layer.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

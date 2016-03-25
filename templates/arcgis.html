@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.16/esri/css/esri.css">
+		<script src="https://js.arcgis.com/3.16/"></script>
+    <title>ArcGIS testing</title>
+    <style>
+  html, body, #mapDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+</style>
+  </head>
+  <body class="claro">
+  <div id="mapDiv"></div>
+</body>
+</html>
+<script>
+require(["esri/map", "dojo/domReady!"], function(Map) {
+  var map = new Map("mapDiv", {
+    center: [-118, 34.5],
+    zoom: 8,
+    basemap: "streets"
+  });
+});
+</script>
