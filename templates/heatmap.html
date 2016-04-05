@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=esyi84fgHk44HndFRDPxr5lb"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
+    <script type="text/javascript" src="static/Heatmap_min.js"></script>
     <title>热力图功能示例</title>
     <style type="text/css">
 		ul,li{list-style: none;margin:0;padding:0;float:left;}
@@ -32,29 +32,19 @@
 //    {"lng":111.31290171156579,"lat":30.71402312006077,"count":472}];
 
     var entries = JSON.parse("{{ entries }}"); 
+
+    // get data
     points = [];
-    var pointArr = [];
-
-    translateCallback = function(data){
-        if(data.status == 0){
-          for (var i = 0; i < data.points.length; i++){
-            point = {"lng":data.points[i]["lng"],"lat":data.points[i]["lat"],"count":entries[i][2]};
-            points[i] = point;
-          }
-          heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":10});
-          map.addOverlay(heatmapOverlay);
-          heatmapOverlay.setDataSet({data:points,max:100});
-        }
-    }
-    for(i=0; i<entries.length; i++){
-      // convert wgs84 to baidu 
-        var ggPoint = new BMap.Point(entries[i][0],entries[i][1]);
-        pointArr.push(ggPoint);
-    }
-    var convertor = new BMap.Convertor();
-    convertor.translate(pointArr, 1, 5, translateCallback)
-
-   
+    for(i=0;i<entries.length;i++){
+        point = {"lng":entries[i][0],"lat":entries[i][1],"count":entries[i][2]};
+        points[i] = point;
+    }   
+    // display map 
+    heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":10});
+    map.addOverlay(heatmapOverlay);
+    heatmapOverlay.setDataSet({data:points,max:1000}); 
+    heatmapOverlay.show()
+    
     if(!isSupportCanvas()){
     	alert('热力图目前只支持有canvas支持的浏览器,您所使用的浏览器不能使用热力图功能~')
     }

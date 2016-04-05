@@ -22,6 +22,7 @@ def hello():
 	#entries = [dict(longitude=row[0], latitude=row[1],count=int(row[2]) for row in cur.fetchall()]
 	return render_template('hello.html', entries=json.dumps(cur.fetchall()))
 
+# static heat map
 @app.route('/heatmap')
 def heatmap():
 	db = MySQLdb.connect(host="10.19.251.50",    # your host, usually localhost
@@ -30,7 +31,7 @@ def heatmap():
                      db="test")        # name of the data base
 
 	cur = db.cursor()
-	cur.execute("SELECT * FROM heat_map limit 100")
+	cur.execute("SELECT * FROM heat_map ")
 	return render_template('heatmap.html',entries=json.dumps(cur.fetchall()))
 
 # test animation 
@@ -45,6 +46,17 @@ def animation():
 	cur.execute("SELECT * FROM heat_map ")
 	return render_template('animation.html',entries=json.dumps(cur.fetchall()))
 
+# convert wgs84 to baidu longtitude,latitude	
+@app.route('/convert')
+def convert():
+	db = MySQLdb.connect(host="10.19.251.50",    # your host, usually localhost
+                     user="root",         # your username
+                     passwd="sxcloud",  # your password
+                     db="test")        # name of the data base
+
+	cur = db.cursor()
+	cur.execute("SELECT * FROM baidu_location limit 10")
+	return render_template('convert.html',entries=json.dumps(cur.fetchall()))
 
 
 # arcgis testing

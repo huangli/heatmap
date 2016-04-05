@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=esyi84fgHk44HndFRDPxr5lb"></script>
+		<script type="text/javascript" src="../js/Heatmap_min.js"></script>
+		<script src="jquery-2.2.2.min.js"></script>
+		<title>wgs84坐标转换</title>
+		<style type="text/css">
+		ul,li{list-style: none;margin:0;padding:0;float:left;}
+		html{height:100%}
+		body{height:100%;margin:0px;padding:0px;font-family:"微软雅黑";}
+		#container{height:500px;width:100%;}
+		#r-result{width:100%;}
+		</style>  
+</head>
+</html>
+<script type="text/javascript">
+	var entries = JSON.parse("{{ entries }}"); 
+	points = [];
+
+	for(i=0;i<entries.length;i++){
+		points[i] = new BMap.Point(entries[i][0],entries[i][1])
+	}
+
+	translateCallback = function (data){
+      if(data.status === 0) {
+        for (var i = 0; i < data.points.length; i++) {
+	        point = {"lng":entries[i][0],"lat":entries[i][1]};
+	        points[i] = point;
+        }
+      }
+    }
+	var convertor = new BMap.Convertor();
+  	convertor.translate(points, 1, 5, translateCallback)
+</script>
