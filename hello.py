@@ -78,12 +78,14 @@ def insert():
 	# write data
 	points = request.get_json()
 	try:
-		for i in range(10):
-			sql = "insert into baidu_location(longitude, latitude, baidu_longitude,baidu_latitude) \
-					values('%f','%f','%f','%f')" % \
-					(points[i]["lng"], points[i]["lat"], points[i]["b_lng"],points[i]["b_lat"])  
-			cur.execute(sql)   
-			db.commit()
+			# sql = "insert into baidu_location(longitude, latitude, baidu_longitude,baidu_latitude) \
+			# 		values('%f','%f','%f','%f')" % \
+			# 		(points[i]["lng"], points[i]["lat"], points[i]["b_lng"],points[i]["b_lat"])  
+		sql = "insert into baidu_location(baidu_longitude,baidu_latitude) \
+				values('%f','%f')" % \
+				(points[0]["b_lng"],points[0]["b_lat"])  
+		cur.execute(sql)   
+		db.commit()
 	except Exception, e:
 		raise e
 	cur.close()

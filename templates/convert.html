@@ -18,20 +18,17 @@
 </html>
 <script type="text/javascript">
 	var entries = JSON.parse("{{ entries }}"); 
-	points = [];
-	baidu_points = [];
+	var points = [];
+	var baidu_points = [];
 	LNG_IDX = 1;
 	LAT_IDX = 2;
-
-	for(i=0;i<entries.length;i++){
-		points[i] = new BMap.Point(entries[i][LNG_IDX],entries[i][LAT_IDX])
-	}
+	
 // get baidu longitude and latitude, send back to database
 	translateCallback = function (data){
       if(data.status === 0) {
         for (var i = 0; i < data.points.length; i++) {
-	        // point = {"lng":points[i][0],"lat":points[i][1],"b_lng":entries[i][1],"b_lat":entries[i][2]};
-	        point = {"lng":points[i]["lng"],"lat":points[i]["lat"],"b_lng":data.points[i]["lng"],"b_lat":data.points[i]["lat"]};
+	        // point = {"lng":points[i]["lng"],"lat":points[i]["lat"],"b_lng":data.points[i]["lng"],"b_lat":data.points[i]["lat"]};
+	        point = {"b_lng":data.points[i]["lng"],"b_lat":data.points[i]["lat"]};
 	        baidu_points[i] = point;
         }
       }
@@ -43,6 +40,17 @@
            data: JSON.stringify(baidu_points)
        });
   }
-	var convertor = new BMap.Convertor();
-	convertor.translate(points, 1, 5, translateCallback)
+  // var convertor = new BMap.Convertor();
+  // ggPoint = new BMap.Point(entries[0][LNG_IDX],entries[0][LAT_IDX]);
+  // points.push(ggPoint);
+  // convertor.translate(points, 1, 5, translateCallback)
+
+  // convert point
+	for(var i = 0; i < entries.length; i++){
+		point = new BMap.Point(entries[i][LNG_IDX],entries[i][LAT_IDX])
+		var convertor = new BMap.Convertor();
+		points.push(point)
+		convertor.translate(points[i], 1, 5, translateCallback)
+  }
+
 </script>
