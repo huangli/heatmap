@@ -32,7 +32,10 @@ def heatmap():
 
 	cur = db.cursor()
 	cur.execute("SELECT * FROM heat_map ")
-	return render_template('heatmap.html',entries=json.dumps(cur.fetchall()))
+	points = json.dumps(cur.fetchall())
+	cur.close()
+	db.close
+	return render_template('heatmap.html',entries=points)
 
 # test animation 
 @app.route('/animation')
@@ -44,7 +47,10 @@ def animation():
 
 	cur = db.cursor()
 	cur.execute("SELECT * FROM heat_map ")
-	return render_template('animation.html',entries=json.dumps(cur.fetchall()))
+	points = json.dumps(cur.fetchall())
+	cur.close()
+	db.close
+	return render_template('animation.html',entries=points)
 
 # convert wgs84 to baidu longtitude,latitude	
 @app.route('/convert')
@@ -55,9 +61,34 @@ def convert():
                      db="test")        # name of the data base
 
 	cur = db.cursor()
-	cur.execute("SELECT * FROM baidu_location limit 10")
-	return render_template('convert.html',entries=json.dumps(cur.fetchall()))
+	cur.execute("SELECT * FROM heat_map_201603 limit 10")
+	entries = json.dumps(cur.fetchall())
+	# cur.close()
+	# db.close
+	return render_template('convert.html',entries=entries)
 
+# insert data into database
+@app.route('/insert', methods=['GET', 'POST'])
+def insert():
+	db = MySQLdb.connect(host="10.19.251.50",    # your host, usually localhost
+                     user="root",         # your username
+                     passwd="sxcloud",  # your password
+                     db="test")        # name of the data base
+	cur = db.cursor()
+	# write data
+	points = request.get_json()
+	try:
+		for i in range(10):
+			sql = "insert into baidu_location(longitude, latitude, baidu_longitude,baidu_latitude) \
+					values('%f','%f','%f','%f')" % \
+					(points[i]["lng"], points[i]["lat"], points[i]["b_lng"],points[i]["b_lat"])  
+			cur.execute(sql)   
+			db.commit()
+	except Exception, e:
+		raise e
+	cur.close()
+	db.close()
+	return render_template('message.html',entries=points)
 
 # arcgis testing
 @app.route('/arcgis')

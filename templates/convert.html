@@ -4,8 +4,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=esyi84fgHk44HndFRDPxr5lb"></script>
-		<script type="text/javascript" src="../js/Heatmap_min.js"></script>
-		<script src="jquery-2.2.2.min.js"></script>
+		<script type="text/javascript" src="static/Heatmap_min.js"></script>
+		<script src="static/jquery-2.2.2.min.js"></script>
 		<title>wgs84坐标转换</title>
 		<style type="text/css">
 		ul,li{list-style: none;margin:0;padding:0;float:left;}
@@ -19,19 +19,30 @@
 <script type="text/javascript">
 	var entries = JSON.parse("{{ entries }}"); 
 	points = [];
+	baidu_points = [];
+	LNG_IDX = 1;
+	LAT_IDX = 2;
 
 	for(i=0;i<entries.length;i++){
-		points[i] = new BMap.Point(entries[i][0],entries[i][1])
+		points[i] = new BMap.Point(entries[i][LNG_IDX],entries[i][LAT_IDX])
 	}
-
+// get baidu longitude and latitude, send back to database
 	translateCallback = function (data){
       if(data.status === 0) {
         for (var i = 0; i < data.points.length; i++) {
-	        point = {"lng":entries[i][0],"lat":entries[i][1]};
-	        points[i] = point;
+	        // point = {"lng":points[i][0],"lat":points[i][1],"b_lng":entries[i][1],"b_lat":entries[i][2]};
+	        point = {"lng":points[i]["lng"],"lat":points[i]["lat"],"b_lng":data.points[i]["lng"],"b_lat":data.points[i]["lat"]};
+	        baidu_points[i] = point;
         }
       }
-    }
+      // $.post("/insert", JSON.stringify(points));
+       $.ajax({
+           type: "POST",
+           url: "/insert",
+           contentType: "application/json; charset=utf-8",
+           data: JSON.stringify(baidu_points)
+       });
+  }
 	var convertor = new BMap.Convertor();
-  	convertor.translate(points, 1, 5, translateCallback)
+	convertor.translate(points, 1, 5, translateCallback)
 </script>
